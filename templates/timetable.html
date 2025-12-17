@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Generated Timetables</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+            margin: 20px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .timetable-wrapper {
+            margin-bottom: 50px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 30px;
+        }
+        table {
+            width: 95%;
+            margin: 30px auto;
+            border-collapse: collapse;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ccc;
+            text-align: center;
+            padding: 10px;
+            height: 60px;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+            font-size: 14px;
+        }
+        /* Day headers */
+        td:first-child {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            width: 10%;
+        }
+        /* Class cell */
+        .class-cell {
+            background: white;
+            vertical-align: top;
+            padding: 8px;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        .class-cell strong {
+            color: #0056b3;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .empty-cell {
+            background: #f8f8f8;
+        }
+    </style>
+</head>
+<body>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div style="padding: 15px; background-color: {% if category == 'error' %}#f8d7da{% else %}#d4edda{% endif %}; border: 1px solid {% if category == 'error' %}#f5c6cb{% else %}#c3e6cb{% endif %}; color: {% if category == 'error' %}#721c24{% else %}#155724{% endif %}; border-radius: 5px; margin: 20px auto; width: 90%;">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+
+    {% for semester in semesters %}
+    <div class="timetable-wrapper">
+        <h2>Generated Timetable for {{ semester }}</h2>
+
+        {% set timetable = generated_grids[semester] %} {% set days = timetable.keys() %}
+
+        <table>
+            <tr>
+                <th>Day / Time</th>
+                {% for timing in timings %}
+                    <th>{{ timing }}</th>
+                {% endfor %}
+            </tr>
+            
+            {% for day in days %}
+            <tr>
+                <td>{{ day }}</td> {% for class_obj in timetable[day] %}
+                    {% if class_obj %}
+                        <td class="class-cell">
+                            <strong>{{ class_obj.subject_name }}</strong>
+                            ({{ class_obj.teacher_name }})<br>
+                            <small>[{{ class_obj.subject_code }}]</small>
+                        </td>
+                    {% else %}
+                        <td class="empty-cell">-</td> {% endif %}
+                {% endfor %}
+                
+                {% if day == "Saturday" %}
+                    {% for i in range(timings|length - timetable[day]|length) %}
+                        <td class="empty-cell" style="background: #e0e0e0;">-</td>
+                    {% endfor %}
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endfor %}
+
+</body>
+</html>

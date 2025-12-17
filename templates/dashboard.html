@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard | Timetable Generator</title>
+  <style>
+    /* ... (your existing styles are fine) ... */
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 0;
+    }
+    h2 { text-align: center; margin-top: 30px; color: #333; }
+    .container {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+    .semester-box {
+      background: white;
+      width: 30%;
+      min-width: 320px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+    h3 {
+      text-align: center;
+      color: #007bff;
+      margin-bottom: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      text-align: center;
+      padding: 8px;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+    input {
+      width: 95%;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      display: block;
+      margin: 30px auto;
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover { background: #0056b3; }
+  </style>
+</head>
+<body>
+  <h2>Welcome, {{ teacher.name }} ({{ teacher.department }})</h2>
+
+  <form action="/save_subjects" method="POST">
+    <div class="container">
+      {% for sem in ['Sem1', 'Sem2', 'Sem3'] %}
+      <div class="semester-box">
+        <h3>{{ sem }}</h3>
+        <table>
+          <tr>
+            <th>Subject Name</th>
+            <th>Subject Code</th>
+            <th>Priority</th>
+            <th>Teacher Name</th>
+            <th>Hours/Week</th> 
+          </tr>
+          {% for i in range(7) %}
+          <tr>
+            <td><input type="text" name="{{ sem }}_subject_name"></td>
+            <td><input type="text" name="{{ sem }}_subject_code"></td>
+            <td><input type="number" name="{{ sem }}_priority" min="1" max="10"></td>
+            <td><input type="text" name="{{ sem }}_teacher_name"></td>
+            <td><input type="number" name="{{ sem }}_hours_per_week" min="1" max="10"></td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+      {% endfor %}
+    </div>
+
+    <button type="submit">Generate Timetable</button>
+  </form>
+</body>
+</html>
